@@ -108,7 +108,7 @@ MIT
 
 ## 👤 Autor
 
-[Tu nombre]
+Engels Grau, Helianta Guevara y Rijals Carrasquero
 
 ---
 
