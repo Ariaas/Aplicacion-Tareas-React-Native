@@ -18,7 +18,8 @@ Aplicación móvil de gestión de tareas construida con React Native y Expo.
 - **React Navigation** - Navegación entre pantallas
 - **React Native Paper** - Componentes UI Material Design
 - **AsyncStorage** - Almacenamiento local
-- **Context API** - Manejo de estado global
+- **Redux Toolkit** - Manejo de estado global
+- **React Hook Form** - Validación de formularios
 
 ## 📂 Estructura del Proyecto
 
@@ -30,8 +31,11 @@ src/
 │   ├── EstadoVacio.js
 │   ├── BotonFlotante.js
 │   └── CampoTexto.js
-├── contexto/
-│   └── ContextoTareas.js     # Estado global
+├── store/
+│   ├── index.js              # Configuración del store
+│   └── tareasSlice.js        # Redux slice
+├── hooks/
+│   └── usePersistenciaTareas.js  # Custom hook
 ├── navegacion/
 │   └── NavegadorApp.js       # Configuración de rutas
 └── pantallas/
@@ -96,8 +100,14 @@ npm start
 ### Componentes Reutilizables
 El proyecto utiliza componentización para mantener el código limpio y reutilizable.
 
-### Context API
-Manejo de estado global sin prop drilling, facilitando el acceso a las tareas desde cualquier componente.
+### Redux Toolkit
+Manejo de estado global con Redux Toolkit, incluyendo slices, acciones y selectores para gestionar las tareas de forma eficiente.
+
+### React Hook Form
+Validación de formularios con reglas personalizadas para título y descripción de tareas.
+
+### Custom Hooks
+Hook personalizado `usePersistenciaTareas` para sincronizar el estado de Redux con AsyncStorage.
 
 ### React Navigation
 Stack Navigator para navegación fluida entre pantallas con animaciones nativas.
