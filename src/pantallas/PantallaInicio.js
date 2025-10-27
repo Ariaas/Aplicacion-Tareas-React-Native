@@ -1,73 +1,34 @@
 import React from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
-import { usarTareas } from '../contexto/ContextoTareas';
+import { useDispatch, useSelector } from 'react-redux';
+import { cambiarEstadoTarea, eliminarTarea, selectTareas, selectEstadisticas } from '../store/tareasSlice';
+import { usePersistenciaTareas } from '../hooks/usePersistenciaTareas';
 
-// IMPORTAR COMPONENTES REUTILIZABLES
 import TarjetaTarea from '../componentes/TarjetaTarea';
 import EstadisticasTareas from '../componentes/EstadisticasTareas';
 import EstadoVacio from '../componentes/EstadoVacio';
 import BotonFlotante from '../componentes/BotonFlotante';
 
-/**
- * ========================================
- * PANTALLA: PantallaInicio
- * ========================================
- * 
- * Esta es la pantalla principal de la app.
- * Muestra la lista de tareas y permite navegar a otras pantallas.
- * 
- * CONCEPTOS IMPORTANTES:
- * 
- * 1. PROPS DE NAVEGACIÓN
- *    - navigation: objeto que permite navegar entre pantallas
- *    - navigation.navigate('NombrePantalla'): ir a otra pantalla
- *    - navigation.navigate('Pantalla', { datos }): pasar datos
- * 
- * 2. CUSTOM HOOK (usarTareas)
- *    - Accede al contexto global de tareas
- *    - Proporciona funciones y datos
- * 
- * 3. FLATLIST
- *    - Componente optimizado para listas largas
- *    - Renderiza solo los elementos visibles
- *    - Mejor rendimiento que ScrollView con map()
- * 
- * 4. COMPONENTIZACIÓN
- *    - En lugar de tener todo el código aquí
- *    - Usamos componentes pequeños y reutilizables
- *    - Código más limpio y fácil de mantener
- */
 const PantallaInicio = ({ navigation }) => {
-  // OBTENER DATOS Y FUNCIONES DEL CONTEXTO
-  const { tareas, cambiarEstadoTarea, eliminarTarea, obtenerEstadisticas } = usarTareas();
-  const estadisticas = obtenerEstadisticas();
+  const dispatch = useDispatch();
+  const tareas = useSelector(selectTareas);
+  const estadisticas = useSelector(selectEstadisticas);
+  
+  usePersistenciaTareas();
 
-  /**
-   * FUNCIÓN: renderizarTarea
-   * 
-   * FlatList necesita una función que renderice cada elemento
-   * Recibe un objeto con la propiedad 'item' (la tarea actual)
-   * 
-   * Aquí usamos el componente TarjetaTarea en lugar de
-   * escribir todo el código JSX directamente
-   */
   const renderizarTarea = ({ item }) => (
     <TarjetaTarea
       tarea={item}
       alPresionar={() => navigation.navigate('DetalleTarea', { idTarea: item.id })}
-      alCambiarEstado={() => cambiarEstadoTarea(item.id)}
-      alEliminar={() => eliminarTarea(item.id)}
+      alCambiarEstado={() => dispatch(cambiarEstadoTarea(item.id))}
+      alEliminar={() => dispatch(eliminarTarea(item.id))}
     />
   );
 
   return (
     <View style={estilos.contenedor}>
-      {/* COMPONENTE: EstadisticasTareas */}
       <EstadisticasTareas estadisticas={estadisticas} />
 
-      {/* RENDERIZADO CONDICIONAL */}
-      {/* Si no hay tareas, mostrar EstadoVacio */}
-      {/* Si hay tareas, mostrar FlatList */}
       {tareas.length === 0 ? (
         <EstadoVacio />
       ) : (
@@ -79,7 +40,6 @@ const PantallaInicio = ({ navigation }) => {
         />
       )}
 
-      {/* COMPONENTE: BotonFlotante */}
       <BotonFlotante
         icono="plus"
         alPresionar={() => navigation.navigate('AgregarTarea')}

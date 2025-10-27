@@ -1,69 +1,27 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
-import { Button, Text, Snackbar } from 'react-native-paper';
-import { usarTareas } from '../contexto/ContextoTareas';
+import { Button, Text, HelperText } from 'react-native-paper';
+import { useDispatch } from 'react-redux';
+import { useForm, Controller } from 'react-hook-form';
+import { agregarTarea } from '../store/tareasSlice';
 
-// IMPORTAR COMPONENTE REUTILIZABLE
 import CampoTexto from '../componentes/CampoTexto';
 
-/**
- * ========================================
- * PANTALLA: PantallaAgregarTarea
- * ========================================
- * 
- * Permite crear una nueva tarea.
- * 
- * CONCEPTOS IMPORTANTES:
- * 
- * 1. useState
- *    - Hook para manejar estado local del componente
- *    - const [valor, setValor] = useState(valorInicial)
- *    - Cada vez que cambia, el componente se re-renderiza
- * 
- * 2. VALIDACIÓN
- *    - Verificar que los datos sean correctos antes de guardar
- *    - Mostrar mensajes de error al usuario
- * 
- * 3. KeyboardAvoidingView
- *    - Evita que el teclado tape los inputs
- *    - Importante para buena UX en móviles
- * 
- * 4. Snackbar
- *    - Mensaje temporal que aparece en la parte inferior
- *    - Útil para feedback al usuario
- */
 const PantallaAgregarTarea = ({ navigation }) => {
-  // ESTADO LOCAL
-  const [titulo, establecerTitulo] = useState('');
-  const [descripcion, establecerDescripcion] = useState('');
-  const [snackbarVisible, establecerSnackbarVisible] = useState(false);
+  const dispatch = useDispatch();
+  
+  const { control, handleSubmit, formState: { errors } } = useForm({
+    defaultValues: {
+      titulo: '',
+      descripcion: '',
+    },
+  });
 
-  // OBTENER FUNCIÓN DEL CONTEXTO
-  const { agregarTarea } = usarTareas();
-
-  /**
-   * FUNCIÓN: manejarAgregarTarea
-   * 
-   * 1. Valida que el título no esté vacío
-   * 2. Si es válido, agrega la tarea
-   * 3. Limpia el formulario
-   * 4. Vuelve a la pantalla anterior
-   */
-  const manejarAgregarTarea = () => {
-    // VALIDACIÓN: trim() elimina espacios al inicio y final
-    if (titulo.trim() === '') {
-      establecerSnackbarVisible(true);
-      return; // Detener la ejecución si no es válido
-    }
-
-    // Agregar tarea usando la función del contexto
-    agregarTarea(titulo.trim(), descripcion.trim());
-
-    // Limpiar formulario
-    establecerTitulo('');
-    establecerDescripcion('');
-
-    // Navegar de regreso (goBack va a la pantalla anterior)
+  const onSubmit = (data) => {
+    dispatch(agregarTarea({
+      titulo: data.titulo.trim(),
+      descripcion: data.descripcion.trim(),
+    }));
     navigation.goBack();
   };
 
@@ -78,30 +36,71 @@ const PantallaAgregarTarea = ({ navigation }) => {
             Crear Nueva Tarea
           </Text>
 
-          {/* COMPONENTE REUTILIZABLE: CampoTexto */}
-          <CampoTexto
-            etiqueta="Título *"
-            valor={titulo}
-            alCambiar={establecerTitulo}
-            placeholder="Ej: Comprar leche"
-            longitudMaxima={50}
+          <Controller
+            control={control}
+            name="titulo"
+            rules={{
+              required: 'El título es obligatorio',
+              minLength: {
+                value: 3,
+                message: 'El título debe tener al menos 3 caracteres',
+              },
+              maxLength: {
+                value: 50,
+                message: 'El título no puede exceder 50 caracteres',
+              },
+            }}
+            render={({ field: { onChange, value } }) => (
+              <>
+                <CampoTexto
+                  etiqueta="Título *"
+                  valor={value}
+                  alCambiar={onChange}
+                  placeholder="Ej: Comprar leche"
+                  longitudMaxima={50}
+                />
+                {errors.titulo && (
+                  <HelperText type="error" visible={true}>
+                    {errors.titulo.message}
+                  </HelperText>
+                )}
+              </>
+            )}
           />
 
-          <CampoTexto
-            etiqueta="Descripción (opcional)"
-            valor={descripcion}
-            alCambiar={establecerDescripcion}
-            multilinea={true}
-            numeroLineas={4}
-            placeholder="Agrega detalles sobre la tarea..."
-            longitudMaxima={200}
+          <Controller
+            control={control}
+            name="descripcion"
+            rules={{
+              maxLength: {
+                value: 200,
+                message: 'La descripción no puede exceder 200 caracteres',
+              },
+            }}
+            render={({ field: { onChange, value } }) => (
+              <>
+                <CampoTexto
+                  etiqueta="Descripción (opcional)"
+                  valor={value}
+                  alCambiar={onChange}
+                  multilinea={true}
+                  numeroLineas={4}
+                  placeholder="Agrega detalles sobre la tarea..."
+                  longitudMaxima={200}
+                />
+                {errors.descripcion && (
+                  <HelperText type="error" visible={true}>
+                    {errors.descripcion.message}
+                  </HelperText>
+                )}
+              </>
+            )}
           />
 
-          {/* BOTONES */}
           <View style={estilos.contenedorBotones}>
             <Button
               mode="contained"
-              onPress={manejarAgregarTarea}
+              onPress={handleSubmit(onSubmit)}
               style={estilos.boton}
               icon="check"
             >
@@ -120,18 +119,6 @@ const PantallaAgregarTarea = ({ navigation }) => {
         </View>
       </ScrollView>
 
-      {/* SNACKBAR: Mensaje de error */}
-      <Snackbar
-        visible={snackbarVisible}
-        onDismiss={() => establecerSnackbarVisible(false)}
-        duration={3000}
-        action={{
-          label: 'OK',
-          onPress: () => establecerSnackbarVisible(false),
-        }}
-      >
-        El título es obligatorio
-      </Snackbar>
     </KeyboardAvoidingView>
   );
 };

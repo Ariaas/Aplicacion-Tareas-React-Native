@@ -1,52 +1,26 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
-import { Card, Text, Button, Chip, Portal, Dialog } from 'react-native-paper';
-import { usarTareas } from '../contexto/ContextoTareas';
+import { Card, Text, Button, Chip, Portal, Dialog, HelperText } from 'react-native-paper';
+import { useDispatch, useSelector } from 'react-redux';
+import { useForm, Controller } from 'react-hook-form';
+import { cambiarEstadoTarea, eliminarTarea, editarTarea, selectTareas } from '../store/tareasSlice';
 import CampoTexto from '../componentes/CampoTexto';
 
-/**
- * ========================================
- * PANTALLA: PantallaDetalleTarea
- * ========================================
- * 
- * Muestra los detalles completos de una tarea.
- * Permite editar, completar o eliminar la tarea.
- * 
- * CONCEPTOS IMPORTANTES:
- * 
- * 1. ROUTE PARAMS
- *    - route.params contiene los datos pasados desde otra pantalla
- *    - navigation.navigate('Pantalla', { dato: valor })
- *    - const { dato } = route.params
- * 
- * 2. FIND
- *    - Busca un elemento en un array que cumpla una condición
- *    - Retorna el primer elemento encontrado o undefined
- * 
- * 3. PORTAL (React Native Paper)
- *    - Renderiza componentes fuera de la jerarquía normal
- *    - Útil para modales y diálogos
- * 
- * 4. DIALOG
- *    - Ventana modal para confirmar acciones
- *    - Buena práctica para ediciones y eliminaciones
- */
 const PantallaDetalleTarea = ({ route, navigation }) => {
-  // OBTENER ID DE LA TAREA DESDE LOS PARÁMETROS
   const { idTarea } = route.params;
-  
-  // OBTENER DATOS Y FUNCIONES DEL CONTEXTO
-  const { tareas, cambiarEstadoTarea, eliminarTarea, editarTarea } = usarTareas();
-  
-  // BUSCAR LA TAREA ESPECÍFICA
+  const dispatch = useDispatch();
+  const tareas = useSelector(selectTareas);
   const tarea = tareas.find((t) => t.id === idTarea);
 
-  // ESTADO LOCAL PARA EL DIÁLOGO DE EDICIÓN
   const [dialogoVisible, establecerDialogoVisible] = useState(false);
-  const [tituloEditar, establecerTituloEditar] = useState('');
-  const [descripcionEditar, establecerDescripcionEditar] = useState('');
+  
+  const { control, handleSubmit, reset, formState: { errors } } = useForm({
+    defaultValues: {
+      titulo: '',
+      descripcion: '',
+    },
+  });
 
-  // SI LA TAREA NO EXISTE, MOSTRAR MENSAJE
   if (!tarea) {
     return (
       <View style={estilos.contenedor}>
@@ -55,44 +29,28 @@ const PantallaDetalleTarea = ({ route, navigation }) => {
     );
   }
 
-  /**
-   * FUNCIÓN: manejarEditar
-   * 
-   * Abre el diálogo y pre-llena los campos con los datos actuales
-   */
   const manejarEditar = () => {
-    establecerTituloEditar(tarea.titulo);
-    establecerDescripcionEditar(tarea.descripcion);
+    reset({
+      titulo: tarea.titulo,
+      descripcion: tarea.descripcion,
+    });
     establecerDialogoVisible(true);
   };
 
-  /**
-   * FUNCIÓN: manejarGuardarEdicion
-   * 
-   * Valida y guarda los cambios
-   */
-  const manejarGuardarEdicion = () => {
-    if (tituloEditar.trim() !== '') {
-      editarTarea(tarea.id, tituloEditar.trim(), descripcionEditar.trim());
-      establecerDialogoVisible(false);
-    }
+  const onSubmitEdicion = (data) => {
+    dispatch(editarTarea({
+      id: tarea.id,
+      titulo: data.titulo.trim(),
+      descripcion: data.descripcion.trim(),
+    }));
+    establecerDialogoVisible(false);
   };
 
-  /**
-   * FUNCIÓN: manejarEliminar
-   * 
-   * Elimina la tarea y vuelve a la pantalla anterior
-   */
   const manejarEliminar = () => {
-    eliminarTarea(tarea.id);
+    dispatch(eliminarTarea(tarea.id));
     navigation.goBack();
   };
 
-  /**
-   * FUNCIÓN: formatearFecha
-   * 
-   * Convierte la fecha ISO a formato legible en español
-   */
   const formatearFecha = (fechaString) => {
     const fecha = new Date(fechaString);
     return fecha.toLocaleDateString('es-ES', {
@@ -108,7 +66,6 @@ const PantallaDetalleTarea = ({ route, navigation }) => {
     <ScrollView style={estilos.contenedor}>
       <Card style={estilos.tarjeta}>
         <Card.Content>
-          {/* ESTADO DE LA TAREA */}
           <View style={estilos.contenedorEstado}>
             <Chip
               icon={tarea.completada ? 'check-circle' : 'clock-outline'}
@@ -121,12 +78,10 @@ const PantallaDetalleTarea = ({ route, navigation }) => {
             </Chip>
           </View>
 
-          {/* TÍTULO */}
           <Text variant="headlineMedium" style={estilos.titulo}>
             {tarea.titulo}
           </Text>
 
-          {/* DESCRIPCIÓN */}
           {tarea.descripcion ? (
             <View style={estilos.seccion}>
               <Text variant="titleMedium" style={estilos.tituloSeccion}>
@@ -142,7 +97,6 @@ const PantallaDetalleTarea = ({ route, navigation }) => {
             </Text>
           )}
 
-          {/* FECHA DE CREACIÓN */}
           <View style={estilos.seccion}>
             <Text variant="titleMedium" style={estilos.tituloSeccion}>
               Fecha de creación
@@ -154,12 +108,11 @@ const PantallaDetalleTarea = ({ route, navigation }) => {
         </Card.Content>
       </Card>
 
-      {/* BOTONES DE ACCIÓN */}
       <View style={estilos.contenedorAcciones}>
         <Button
           mode="contained"
           icon={tarea.completada ? 'close-circle' : 'check-circle'}
-          onPress={() => cambiarEstadoTarea(tarea.id)}
+          onPress={() => dispatch(cambiarEstadoTarea(tarea.id))}
           style={estilos.botonAccion}
         >
           {tarea.completada ? 'Marcar como Pendiente' : 'Marcar como Completada'}
@@ -185,7 +138,6 @@ const PantallaDetalleTarea = ({ route, navigation }) => {
         </Button>
       </View>
 
-      {/* DIÁLOGO PARA EDITAR */}
       <Portal>
         <Dialog 
           visible={dialogoVisible} 
@@ -193,24 +145,69 @@ const PantallaDetalleTarea = ({ route, navigation }) => {
         >
           <Dialog.Title>Editar Tarea</Dialog.Title>
           <Dialog.Content>
-            <CampoTexto
-              etiqueta="Título"
-              valor={tituloEditar}
-              alCambiar={establecerTituloEditar}
+            <Controller
+              control={control}
+              name="titulo"
+              rules={{
+                required: 'El título es obligatorio',
+                minLength: {
+                  value: 3,
+                  message: 'El título debe tener al menos 3 caracteres',
+                },
+                maxLength: {
+                  value: 50,
+                  message: 'El título no puede exceder 50 caracteres',
+                },
+              }}
+              render={({ field: { onChange, value } }) => (
+                <>
+                  <CampoTexto
+                    etiqueta="Título"
+                    valor={value}
+                    alCambiar={onChange}
+                    longitudMaxima={50}
+                  />
+                  {errors.titulo && (
+                    <HelperText type="error" visible={true}>
+                      {errors.titulo.message}
+                    </HelperText>
+                  )}
+                </>
+              )}
             />
-            <CampoTexto
-              etiqueta="Descripción"
-              valor={descripcionEditar}
-              alCambiar={establecerDescripcionEditar}
-              multilinea={true}
-              numeroLineas={3}
+            <Controller
+              control={control}
+              name="descripcion"
+              rules={{
+                maxLength: {
+                  value: 200,
+                  message: 'La descripción no puede exceder 200 caracteres',
+                },
+              }}
+              render={({ field: { onChange, value } }) => (
+                <>
+                  <CampoTexto
+                    etiqueta="Descripción"
+                    valor={value}
+                    alCambiar={onChange}
+                    multilinea={true}
+                    numeroLineas={3}
+                    longitudMaxima={200}
+                  />
+                  {errors.descripcion && (
+                    <HelperText type="error" visible={true}>
+                      {errors.descripcion.message}
+                    </HelperText>
+                  )}
+                </>
+              )}
             />
           </Dialog.Content>
           <Dialog.Actions>
             <Button onPress={() => establecerDialogoVisible(false)}>
               Cancelar
             </Button>
-            <Button onPress={manejarGuardarEdicion}>
+            <Button onPress={handleSubmit(onSubmitEdicion)}>
               Guardar
             </Button>
           </Dialog.Actions>

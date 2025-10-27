@@ -2,26 +2,6 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Card, Text, IconButton } from 'react-native-paper';
 
-/**
- * COMPONENTE: TarjetaTarea
- * 
- * ¿Qué es un componente?
- * - Es una pieza reutilizable de UI (interfaz de usuario)
- * - Recibe datos a través de "props" (propiedades)
- * - Puede usarse múltiples veces en diferentes lugares
- * 
- * ¿Por qué componentizar?
- * - Código más limpio y organizado
- * - Fácil de mantener y modificar
- * - Reutilizable en diferentes pantallas
- * - Más fácil de testear
- * 
- * Props que recibe este componente:
- * @param {Object} tarea - Objeto con los datos de la tarea
- * @param {Function} alPresionar - Función que se ejecuta al tocar la tarjeta
- * @param {Function} alCambiarEstado - Función para marcar como completada/pendiente
- * @param {Function} alEliminar - Función para eliminar la tarea
- */
 const TarjetaTarea = ({ tarea, alPresionar, alCambiarEstado, alEliminar }) => {
   return (
     <Card
@@ -30,7 +10,6 @@ const TarjetaTarea = ({ tarea, alPresionar, alCambiarEstado, alEliminar }) => {
     >
       <Card.Content>
         <View style={estilos.encabezado}>
-          {/* Información de la tarea */}
           <View style={estilos.infoTarea}>
             <Text
               variant="titleMedium"
@@ -42,7 +21,6 @@ const TarjetaTarea = ({ tarea, alPresionar, alCambiarEstado, alEliminar }) => {
               {tarea.titulo}
             </Text>
             
-            {/* Mostrar descripción solo si existe */}
             {tarea.descripcion ? (
               <Text
                 variant="bodySmall"
@@ -57,17 +35,13 @@ const TarjetaTarea = ({ tarea, alPresionar, alCambiarEstado, alEliminar }) => {
             ) : null}
           </View>
 
-          {/* Botones de acción */}
           <View style={estilos.acciones}>
-            {/* Botón para marcar como completada */}
             <IconButton
               icon={tarea.completada ? 'check-circle' : 'circle-outline'}
               iconColor={tarea.completada ? '#4caf50' : '#757575'}
               size={28}
               onPress={alCambiarEstado}
             />
-            
-            {/* Botón para eliminar */}
             <IconButton
               icon="delete"
               iconColor="#f44336"
@@ -81,7 +55,6 @@ const TarjetaTarea = ({ tarea, alPresionar, alCambiarEstado, alEliminar }) => {
   );
 };
 
-// Estilos del componente
 const estilos = StyleSheet.create({
   tarjeta: {
     marginBottom: 12,
