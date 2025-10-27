@@ -73,10 +73,6 @@ npm start
 - **Android**: Presiona `a` o escanea el QR con Expo Go
 - **iOS**: Presiona `i` o escanea el QR con la cámara
 
-## 📱 Capturas de Pantalla
-
-<!-- Agrega capturas de pantalla aquí -->
-
 ## 🎯 Funcionalidades
 
 ### Gestión de Tareas

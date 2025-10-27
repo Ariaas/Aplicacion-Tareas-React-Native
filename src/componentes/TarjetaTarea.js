@@ -38,14 +38,14 @@ const TarjetaTarea = ({ tarea, alPresionar, alCambiarEstado, alEliminar }) => {
           <View style={estilos.acciones}>
             <IconButton
               icon={tarea.completada ? 'check-circle' : 'circle-outline'}
-              iconColor={tarea.completada ? '#4caf50' : '#757575'}
-              size={28}
+              iconColor={tarea.completada ? '#4ECDC4' : '#B2BEC3'}
+              size={30}
               onPress={alCambiarEstado}
             />
             <IconButton
               icon="delete"
-              iconColor="#f44336"
-              size={24}
+              iconColor="#FF5757"
+              size={26}
               onPress={alEliminar}
             />
           </View>
@@ -57,11 +57,22 @@ const TarjetaTarea = ({ tarea, alPresionar, alCambiarEstado, alEliminar }) => {
 
 const estilos = StyleSheet.create({
   tarjeta: {
-    marginBottom: 12,
-    elevation: 2,
+    marginBottom: 16,
+    elevation: 6,
+    borderRadius: 20,
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#FF6B9D',
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 4 },
+    borderWidth: 2,
+    borderColor: '#FFE5EF',
   },
   tarjetaCompletada: {
-    backgroundColor: '#f1f8e9',
+    backgroundColor: '#F0FDFA',
+    borderLeftWidth: 6,
+    borderLeftColor: '#4ECDC4',
+    borderColor: '#C7F9F5',
   },
   encabezado: {
     flexDirection: 'row',
@@ -72,17 +83,19 @@ const estilos = StyleSheet.create({
     flex: 1,
     marginRight: 8,
   },
-  taskTitle: {
+  titulo: {
     fontWeight: 'bold',
     marginBottom: 4,
-    color: '#000000',  // Negro para mejor contraste
+    color: '#2D3436',
+    fontSize: 16,
   },
-  taskDescription: {
-    color: '#444444',  // Gris oscuro (antes era muy claro)
+  descripcion: {
+    color: '#636E72',
+    fontSize: 14,
   },
-  completedText: {
+  textoCompletado: {
     textDecorationLine: 'line-through',
-    color: '#888888',  // Gris medio (antes era muy claro)
+    color: '#95A5A6',
   },
   acciones: {
     flexDirection: 'row',

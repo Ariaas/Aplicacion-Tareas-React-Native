@@ -15,11 +15,18 @@ const NavegadorApp = () => {
         initialRouteName="Inicio"
         screenOptions={{
           headerStyle: {
-            backgroundColor: '#6200ee',
+            backgroundColor: '#FF6B9D',
+            elevation: 8,
+            shadowColor: '#FF6B9D',
+            shadowOpacity: 0.3,
+            shadowRadius: 12,
+            shadowOffset: { width: 0, height: 4 },
           },
           headerTintColor: '#fff',
           headerTitleStyle: {
             fontWeight: 'bold',
+            fontSize: 22,
+            letterSpacing: 0.5,
           },
         }}
       >

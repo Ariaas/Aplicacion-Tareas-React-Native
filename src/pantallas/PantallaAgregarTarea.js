@@ -126,7 +126,7 @@ const PantallaAgregarTarea = ({ navigation }) => {
 const estilos = StyleSheet.create({
   contenedor: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#FFF5F7',
   },
   contenidoScroll: {
     flexGrow: 1,
@@ -137,7 +137,7 @@ const estilos = StyleSheet.create({
   encabezado: {
     marginBottom: 24,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#1F2937',
   },
   contenedorBotones: {
     marginTop: 8,

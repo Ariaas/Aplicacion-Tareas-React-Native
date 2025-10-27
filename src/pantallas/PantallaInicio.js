@@ -51,10 +51,11 @@ const PantallaInicio = ({ navigation }) => {
 const estilos = StyleSheet.create({
   contenedor: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#FFF5F7',
   },
   contenedorLista: {
     padding: 16,
+    paddingBottom: 80,
   },
 });
 

@@ -27,12 +27,14 @@ const estilos = StyleSheet.create({
     padding: 32,
   },
   titulo: {
-    color: '#333333',
-    marginBottom: 8,
+    color: '#2D3436',
+    marginBottom: 12,
+    fontWeight: 'bold',
   },
   subtitulo: {
-    color: '#666666',
+    color: '#636E72',
     textAlign: 'center',
+    fontSize: 15,
   },
 });
 

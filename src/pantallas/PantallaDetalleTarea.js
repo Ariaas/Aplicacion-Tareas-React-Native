@@ -132,7 +132,7 @@ const PantallaDetalleTarea = ({ route, navigation }) => {
           icon="delete"
           onPress={manejarEliminar}
           style={[estilos.botonAccion, estilos.botonEliminar]}
-          buttonColor="#f44336"
+          buttonColor="#FF5757"
         >
           Eliminar Tarea
         </Button>
@@ -220,11 +220,16 @@ const PantallaDetalleTarea = ({ route, navigation }) => {
 const estilos = StyleSheet.create({
   contenedor: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#FFF5F7',
   },
   tarjeta: {
     margin: 16,
-    elevation: 4,
+    elevation: 8,
+    borderRadius: 20,
+    shadowColor: '#FF6B9D',
+    shadowOpacity: 0.15,
+    shadowRadius: 15,
+    shadowOffset: { width: 0, height: 6 },
   },
   contenedorEstado: {
     marginBottom: 16,
@@ -233,15 +238,15 @@ const estilos = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   chipCompletada: {
-    backgroundColor: '#c8e6c9',
+    backgroundColor: '#C7F9F5',
   },
   chipPendiente: {
-    backgroundColor: '#fff9c4',
+    backgroundColor: '#FFE5EF',
   },
   titulo: {
     fontWeight: 'bold',
     marginBottom: 16,
-    color: '#333',
+    color: '#1F2937',
   },
   seccion: {
     marginTop: 16,
@@ -249,18 +254,18 @@ const estilos = StyleSheet.create({
   tituloSeccion: {
     fontWeight: 'bold',
     marginBottom: 8,
-    color: '#666',
+    color: '#6B7280',
   },
   descripcion: {
-    color: '#333',
+    color: '#374151',
     lineHeight: 24,
   },
   sinDescripcion: {
-    color: '#999',
+    color: '#9CA3AF',
     fontStyle: 'italic',
   },
   fecha: {
-    color: '#666',
+    color: '#6B7280',
   },
   contenedorAcciones: {
     padding: 16,

@@ -19,7 +19,12 @@ const estilos = StyleSheet.create({
     margin: 16,
     right: 0,
     bottom: 0,
-    backgroundColor: '#6200ee',
+    backgroundColor: '#FF6B9D',
+    elevation: 12,
+    shadowColor: '#FF6B9D',
+    shadowOpacity: 0.4,
+    shadowRadius: 16,
+    shadowOffset: { width: 0, height: 6 },
   },
 });
 
